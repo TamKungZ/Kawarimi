@@ -70,6 +70,10 @@ part's existing texture.
 * Teeth and eyes sit at the origin (they are bone-relative).
 * Parts that are only moved keep the game's normals unless you use `Kawarimi model import ... --normals`.
 
+## Legacy mods
+
+A folder with plain `<costume>*.xfbin` files and no `skin.json` or dll (directly, in `files\`, or in `data\spc\`) is loaded as a legacy mod: each costume code found (the first 4 characters of the file names) replaces that costume, like a mod built with `Kawarimi build`. The log and `mods-report.txt` say `legacy mod`. Put such folders in `mods\` or in `mods\legacy\`.
+
 ## Other commands
 
 `Kawarimi help` lists all of them: `extract`/`encode` (archive files), `info`/`unpack`/`pack`/`retarget` (xfbin),

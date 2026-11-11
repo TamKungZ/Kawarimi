@@ -70,5 +70,30 @@ static class ModLoaderTests
             T.Check("loader: report lists every mod", by.Keys.All(text.Contains) && text.Contains("[Failed]") && text.Contains("[Loaded]"));
         }
         finally { try { Directory.Delete(game, true); } catch { } }
+
+        game = NewGame();
+        try
+        {
+            void Plain(string rel, params string[] files)
+            {
+                var d = Path.Combine(game, "mods", rel);
+                Directory.CreateDirectory(d);
+                foreach (var f in files) File.WriteAllText(Path.Combine(d, f), "x");
+            }
+            Plain("plain", "3ksnbod1.xfbin", "3ksnbod1_col2.xfbin", "3ksvbod1.xfbin");
+            Plain(@"legacy\Temari", "dtmmbod1.xfbin", "dtmmdmg01_bod1.xfbin");
+            Plain(@"legacy\Temari2", "dtmmbod1.xfbin");
+
+            var reg = new SkinRegistry();
+            var loader = new ModLoader(game, reg, _ => { });
+            loader.LoadAll();
+            var by = loader.Report.ToDictionary(r => r.Folder);
+
+            T.Check("legacy: one skin per costume code", reg.All.Count(s => s.Replaces is "3ksn" or "3ksv") == 2 && reg.All.Count(s => s.Replaces == "dtmm") == 2);
+            T.Check("legacy: loaded and flagged in the log", by["plain"].Status == ModStatus.Loaded && by["plain"].Messages.Any(m => m.Contains("legacy")));
+            T.Check("legacy: container folder lists its mods", by.ContainsKey("legacy/Temari") && by.ContainsKey("legacy/Temari2") && !by.ContainsKey("legacy"));
+            T.Check("legacy: two mods for one costume do not clash", reg.All.Select(s => s.SkinCode).Distinct().Count() == reg.All.Count);
+        }
+        finally { try { Directory.Delete(game, true); } catch { } }
     }
 }

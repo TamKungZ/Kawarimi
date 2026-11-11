@@ -25,7 +25,12 @@ public sealed class ModLoader
             _log("no mods folder");
             return;
         }
-        foreach (var dir in Directory.GetDirectories(mods).OrderBy(d => d, StringComparer.OrdinalIgnoreCase)) LoadOne(dir);
+        foreach (var dir in Directory.GetDirectories(mods).OrderBy(d => d, StringComparer.OrdinalIgnoreCase))
+        {
+            if (LegacyMod.IsContainer(dir))
+                foreach (var sub in Directory.GetDirectories(dir).OrderBy(d => d, StringComparer.OrdinalIgnoreCase)) LoadOne(sub, Path.GetFileName(dir) + "/");
+            else LoadOne(dir);
+        }
     }
 
     public void WriteReport(string path)
@@ -34,9 +39,9 @@ public sealed class ModLoader
         catch { }
     }
 
-    void LoadOne(string dir)
+    void LoadOne(string dir, string prefix = "")
     {
-        var entry = new ModReportEntry { Folder = Path.GetFileName(dir), Id = Path.GetFileName(dir) };
+        var entry = new ModReportEntry { Folder = prefix + Path.GetFileName(dir), Id = Path.GetFileName(dir) };
         Report.Add(entry);
         var scope = new ModScope(_registry, entry.Id);
         try
@@ -60,6 +65,11 @@ public sealed class ModLoader
     {
         var json = Path.Combine(dir, ModManifest.FileName);
         var dlls = Directory.GetFiles(dir, "*.dll");
+        if (!File.Exists(json) && dlls.Length == 0 && LegacyMod.FilesFolder(dir) is { } legacyFiles)
+        {
+            LoadLegacy(dir, legacyFiles, entry, scope);
+            return;
+        }
         if (!File.Exists(json) && dlls.Length == 0)
         {
             entry.Status = ModStatus.Skipped;
@@ -68,6 +78,13 @@ public sealed class ModLoader
         }
         if (File.Exists(json)) LoadManifest(dir, json, entry, scope);
         foreach (var dll in dlls) LoadAssembly(dir, dll, entry, scope);
+        scope.Warnings.ForEach(entry.Messages.Add);
+    }
+
+    static void LoadLegacy(string dir, string files, ModReportEntry entry, ModScope scope)
+    {
+        entry.Messages.Add("legacy mod (plain xfbin files, no skin.json)");
+        foreach (var skin in LegacyMod.Skins(dir, files)) scope.Register(skin);
         scope.Warnings.ForEach(entry.Messages.Add);
     }
 
