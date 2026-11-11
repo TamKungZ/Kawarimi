@@ -129,13 +129,26 @@ std::string Lower(std::string s) {
     return s;
 }
 
+std::string LastSegment(std::string& d) {
+    while (!d.empty() && (d.back() == '\\' || d.back() == '/')) d.pop_back();
+    size_t cut = d.find_last_of("\\/");
+    std::string seg = cut == std::string::npos ? d : d.substr(cut + 1);
+    d = cut == std::string::npos ? "" : d.substr(0, cut);
+    return seg;
+}
+
 std::string ModName(const Skin& k) {
     std::string d = k.dir;
-    while (!d.empty() && (d.back() == '\\' || d.back() == '/')) d.pop_back();
-    size_t files = d.find_last_of("\\/");
-    std::string parent = files == std::string::npos ? d : d.substr(0, files);
-    size_t mod = parent.find_last_of("\\/");
-    return mod == std::string::npos ? parent : parent.substr(mod + 1);
+    std::string seg = LastSegment(d);
+    if (Lower(seg) == "spc") {
+        std::string up = d;
+        if (Lower(LastSegment(up)) == "data") {
+            d = up;
+            seg = LastSegment(d);
+        }
+    }
+    if (Lower(seg) == "files") seg = LastSegment(d);
+    return seg;
 }
 
 std::vector<std::pair<std::string, Skin>> SkinsForCostume(const std::string& costume) {

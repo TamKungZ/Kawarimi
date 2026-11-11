@@ -18,6 +18,8 @@ Skin mods for NARUTO SHIPPUDEN: Ultimate Ninja STORM 4, loaded while the game ru
 
 Rules and commands: [docs/MODDING.md](docs/MODDING.md). C# mods: [docs/API.md](docs/API.md).
 
+Old mods that are only plain `<costume>*.xfbin` files in a folder also work: put the folder in `mods\` and the log says `legacy mod` ([docs/MODDING.md](docs/MODDING.md)).
+
 Not supported yet: textures other than RGB565, adding new textures, listing mods in the game's costume selector.
 
 ## License
