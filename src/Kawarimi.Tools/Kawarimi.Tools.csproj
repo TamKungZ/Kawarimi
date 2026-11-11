@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>Kawarimi</AssemblyName>
+    <RootNamespace>Kawarimi.Tools</RootNamespace>
+    <ApplicationIcon>..\..\assets\kawarimi.ico</ApplicationIcon>
+    <RollForward>LatestMajor</RollForward>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <SelfContained>true</SelfContained>
+    <PublishSingleFile>true</PublishSingleFile>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Kawarimi.Formats\Kawarimi.Formats.csproj" />
+    <ProjectReference Include="..\Kawarimi.Host\Kawarimi.Host.csproj" />
+  </ItemGroup>
+</Project>

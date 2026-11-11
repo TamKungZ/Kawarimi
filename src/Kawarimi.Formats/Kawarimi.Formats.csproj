@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>Readers and writers for NARUTO STORM 4 game data: CPK archives, xfbin containers, NTP3 textures and NUD meshes.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Kawarimi.Api\Kawarimi.Api.csproj" />
+  </ItemGroup>
+</Project>

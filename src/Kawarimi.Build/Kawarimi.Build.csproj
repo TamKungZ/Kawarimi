@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <Description>MSBuild task that turns a Kawarimi mod project into a ready mod folder on dotnet build.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Kawarimi.Formats\Kawarimi.Formats.csproj" />
+    <PackageReference Include="Microsoft.Build.Utilities.Core" Version="17.8.43" ExcludeAssets="runtime" PrivateAssets="all" />
+    <None Include="Kawarimi.Mod.targets" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

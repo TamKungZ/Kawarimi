@@ -1,0 +1,15 @@
+.env
+.vs/
+.vscode/
+*.user
+*.bak
+*.pyc
+__pycache__/
+bin/
+obj/
+out/
+dist/
+stage/
+installer/gen/
+WYSIWYG.html
+NEXUS.bbcode

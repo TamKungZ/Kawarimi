@@ -1,0 +1,16 @@
+<Project>
+  <PropertyGroup>
+    <KawarimiModsDir Condition="'$(KawarimiModsDir)' == ''">$([System.IO.Path]::GetFullPath('$(MSBuildProjectDirectory)\..\..\mods'))</KawarimiModsDir>
+    <KawarimiEnabled Condition="'$(KawarimiSkipMod)' != 'true' And Exists('$(MSBuildProjectDirectory)\kawarimi.project.json')">true</KawarimiEnabled>
+  </PropertyGroup>
+  <UsingTask TaskName="Kawarimi.Build.BuildMod" AssemblyFile="$(MSBuildThisFileDirectory)Kawarimi.Build.dll" TaskFactory="TaskHostFactory" Condition="'$(MSBuildRuntimeType)' == 'Core'" />
+  <Target Name="KawarimiBuildMod" AfterTargets="Build" Condition="'$(KawarimiEnabled)' == 'true' And '$(MSBuildRuntimeType)' == 'Core'">
+    <PropertyGroup>
+      <KawarimiAssembly Condition="'$(KawarimiAssembly)' == ''">$(TargetPath)</KawarimiAssembly>
+    </PropertyGroup>
+    <BuildMod ProjectDirectory="$(MSBuildProjectDirectory)" Assembly="$(KawarimiAssembly)" ModsDirectory="$(KawarimiModsDir)" />
+  </Target>
+  <Target Name="KawarimiBuildModWithDotnet" AfterTargets="Build" Condition="'$(KawarimiEnabled)' == 'true' And '$(MSBuildRuntimeType)' != 'Core'">
+    <Exec Command="dotnet msbuild &quot;$(MSBuildProjectFullPath)&quot; -nologo -v:m -t:KawarimiBuildMod -p:KawarimiAssembly=&quot;$(TargetPath)&quot; -p:KawarimiModsDir=&quot;$(KawarimiModsDir)&quot;" />
+  </Target>
+</Project>
